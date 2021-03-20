@@ -25,6 +25,7 @@ function Login(props) {
           type="email"
           className="login__input"
           name="email"
+          value={registerEmail}
           onChange={handleChangeEmail}
         ></input>
         <input
@@ -32,6 +33,7 @@ function Login(props) {
           type="password"
           className="login__input"
           name="password"
+          value={registerPass}
           onChange={handleChangePass}
         ></input>
         <button type="submit" className="login__button">

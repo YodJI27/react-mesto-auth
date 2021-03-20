@@ -3,7 +3,7 @@ import React from "react";
 function Footer() {
   return (
     <footer className="footer">
-      <p className="footer__author">&copy;2020. Илья Шнырев</p>
+      <p className="footer__author">&copy;{new Date().getFullYear()}. Илья Шнырев</p>
     </footer>
   );
 }

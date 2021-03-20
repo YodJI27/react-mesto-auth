@@ -12,7 +12,7 @@ import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-import { Route, Switch, useHistory } from "react-router";
+import { Redirect, Route, Switch, useHistory } from "react-router";
 import { authApiToken, authApi } from "../utils/Auth";
 
 const App = (_) => {
@@ -32,21 +32,26 @@ const App = (_) => {
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
-    api.putLikes(card._id, !isLiked).then((newCard) => {
-      const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
-      setCards(newCards);
-    });
+    api
+      .putLikes(card._id, !isLiked)
+      .then((newCard) => {
+        const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
+        setCards(newCards);
+      })
+      .catch((err) => console.log(err));
   }
   // Получение email пользователя
   React.useEffect((_) => {
     if (localStorage.getItem("jwt")) {
-      authApiToken(localStorage.getItem("jwt")).then((res) => {
-        if (res.data) {
-          setHeaderEmail(res.data.email);
-          setLoggedIn(true);
-          history.push("/");
-        }
-      });
+      authApiToken(localStorage.getItem("jwt"))
+        .then((res) => {
+          if (res.data) {
+            setHeaderEmail(res.data.email);
+            setLoggedIn(true);
+            history.push("/");
+          }
+        })
+        .catch((err) => console.log(err));
     }
   });
 
@@ -62,7 +67,7 @@ const App = (_) => {
       })
       .catch((err) => {
         if (err.status === 400) {
-          throw new Error("Введены некорректные данные");
+          console.log(err);
         }
         setLoadingOk(false);
         setToolTip(true);
@@ -90,18 +95,24 @@ const App = (_) => {
 
   // Удаление карточки с сервера
   function handleCardDelete(card) {
-    api.deleteCards(card._id).then((_) => {
-      const newCardsList = cards.filter((value) => card._id !== value._id);
-      setCards(newCardsList);
-    });
+    api
+      .deleteCards(card._id)
+      .then((_) => {
+        const newCardsList = cards.filter((value) => card._id !== value._id);
+        setCards(newCardsList);
+      })
+      .catch((err) => console.log(err));
   }
 
   // Добавление карточки на сервер
   function handleAddPlaceSubmit(name, link) {
-    api.upCardsToTheServer(name, link).then((item) => {
-      setCards([item, ...cards]);
-      closeAllPopups();
-    });
+    api
+      .upCardsToTheServer(name, link)
+      .then((item) => {
+        setCards([item, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(err));
   }
 
   React.useEffect((_) => {
@@ -130,10 +141,13 @@ const App = (_) => {
   }
   // Обновление аватара пользователя
   function handleUpdateAvatar(url) {
-    api.editAvatar(url).then((item) => {
-      setCurrentUser(item);
-      closeAllPopups();
-    });
+    api
+      .editAvatar(url)
+      .then((item) => {
+        setCurrentUser(item);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(err));
   }
 
   function handleEditAvatarClick() {
@@ -183,6 +197,9 @@ const App = (_) => {
             handleCardLike={handleCardLike}
             handleCardDelete={handleCardDelete}
           />
+          <Route path="*">
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+          </Route>
         </Switch>
 
         {/* <Main
@@ -222,6 +239,8 @@ const App = (_) => {
           isOpen={tooltip}
           onClose={closeAllPopups}
           loadingOk={loadingOk}
+          cool={"Вы успешно зарегистрировались!"}
+          error={"Что-то пошло не так! Попробуйте ещё раз."}
         />
       </div>
     </CurrentUserContext.Provider>

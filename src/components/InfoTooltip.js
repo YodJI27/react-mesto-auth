@@ -21,8 +21,8 @@ function InfoTooltip(props) {
         </div>
         <span className="tool__text">
           {props.loadingOk
-            ? "Вы успешно зарегистрировались!"
-            : "Что-то пошло не так! Попробуйте ещё раз."}
+            ? props.cool
+            : props.error}
         </span>
       </div>
     </section>

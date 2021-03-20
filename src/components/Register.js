@@ -26,6 +26,7 @@ function Register(props) {
           type="email"
           className="register__input"
           name="email"
+          value={registerEmail}
           onChange={handleChangeEmail}
         ></input>
         <input
@@ -33,6 +34,7 @@ function Register(props) {
           type="password"
           className="register__input"
           name="password"
+          value={registerPass}
           onChange={handleChangePass}
         ></input>
         <button type="submit" className="register__button">
