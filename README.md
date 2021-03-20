@@ -34,7 +34,7 @@
 
 **Cайт**
  
-[Ссылка на сайт](https://yodji27.github.io/sign-in)
+[Ссылка на сайт](https://yodji27.github.io/react-mesto-auth/)
  
 **Автор**  
 Илья Шнырев  
