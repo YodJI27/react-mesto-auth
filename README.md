@@ -34,7 +34,7 @@
 
 **Cайт**
  
-[Ссылка на сайт](https://yodji27.github.io/mesto-react/)
+[Ссылка на сайт](https://yodji27.github.io/sign-in)
  
 **Автор**  
 Илья Шнырев  
