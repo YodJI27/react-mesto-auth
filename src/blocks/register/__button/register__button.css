@@ -18,4 +18,8 @@
     border: none;
     outline: none;
     cursor: pointer;
+    transition: opacity .5s linear;
+}
+.register__button:hover {
+    opacity: 0.6;
 }

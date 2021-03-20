@@ -3,7 +3,7 @@ import { useLocation } from "react-router";
 import logo from "../images/logo.svg";
 import { Link } from "react-router-dom";
 
-function Header() {
+function Header(props) {
   const locationLink = useLocation();
 
   const linkSwitch = () =>
@@ -20,7 +20,14 @@ function Header() {
   return (
     <header className="header">
       <img className="header__logo" src={logo} alt="Логотип Место"></img>
-      {linkSwitch()}
+      {props.loggedIn ? (
+        <div className="header__box">
+          <p className="header__email">{props.headerEmail}</p>
+          <a className="header__title" onClick={props.logOut}>Выйти</a>
+        </div>
+      ) : (
+        linkSwitch()
+      )}
     </header>
   );
 }

@@ -1,6 +1,4 @@
-.header__text {
-  color: #fff;
-  text-decoration: none;
+.header__title {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
@@ -13,11 +11,11 @@
   font-size: 18px;
   line-height: 22px;
   text-align: right;
-  color: #fff;
-  margin: 51px 0 46px 0;
-  padding: 0;
+  color: #a9a9a9;
+  margin: 0;
+  cursor: pointer;
   transition: opacity 0.5s linear;
 }
-.header__text:hover {
+.header__title:hover {
   opacity: 0.6;
 }

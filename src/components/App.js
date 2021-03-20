@@ -12,9 +12,11 @@ import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-import { Route, Switch } from "react-router";
+import { Route, Switch, useHistory } from "react-router";
+import { authApiToken, authApi } from "../utils/Auth";
 
 const App = (_) => {
+  const history = new useHistory();
   const [isEditPlacePopupOpen, setIsEditPlace] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatar] = React.useState(false);
   const [isEditProfilePopupOpen, setIsEditProfile] = React.useState(false);
@@ -22,8 +24,9 @@ const App = (_) => {
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
-  const [loggedIn, serLoggedIn] = React.useState(false);
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const [loadingOk, setLoadingOk] = React.useState(true);
+  const [headerEmail, setHeaderEmail] = React.useState("");
 
   // Постановка лайков и отправка на сервер
   function handleCardLike(card) {
@@ -34,6 +37,57 @@ const App = (_) => {
       setCards(newCards);
     });
   }
+  // Получение email пользователя
+  React.useEffect((_) => {
+    if (localStorage.getItem("jwt")) {
+      authApiToken(localStorage.getItem("jwt")).then((res) => {
+        if (res.data) {
+          setHeaderEmail(res.data.email);
+          setLoggedIn(true);
+          history.push("/");
+        }
+      });
+    }
+  });
+
+  // Регистрация пользователя
+  function handleRegisterUser(password, email) {
+    setLoadingOk(true);
+    authApi(password, email, "signup")
+      .then((res) => {
+        if (res.data) {
+          setToolTip(true);
+          history.push("/sign-in");
+        }
+      })
+      .catch((err) => {
+        if (err.status === 400) {
+          throw new Error("Введены некорректные данные");
+        }
+        setLoadingOk(false);
+        setToolTip(true);
+      });
+  }
+
+  // Авторизация пользователя
+  function handleLoginUser(password, email) {
+    authApi(password, email, "signin")
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem("jwt", res.token);
+          setLoggedIn(true);
+          history.push("/");
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+  // Выход
+  function logOut() {
+    localStorage.removeItem("jwt");
+    setLoggedIn(false);
+    history.push("/sign-in");
+  }
+
   // Удаление карточки с сервера
   function handleCardDelete(card) {
     api.deleteCards(card._id).then((_) => {
@@ -41,6 +95,7 @@ const App = (_) => {
       setCards(newCardsList);
     });
   }
+
   // Добавление карточки на сервер
   function handleAddPlaceSubmit(name, link) {
     api.upCardsToTheServer(name, link).then((item) => {
@@ -106,13 +161,13 @@ const App = (_) => {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header />
+        <Header headerEmail={headerEmail} loggedIn={loggedIn} logOut={logOut} />
         <Switch>
           <Route path="/sign-in">
-            <Login />
+            <Login handleLoginUser={handleLoginUser} />
           </Route>
           <Route path="/sign-up">
-            <Register />
+            <Register handleRegisterUser={handleRegisterUser} />
           </Route>
           <ProtectedRoute
             exact

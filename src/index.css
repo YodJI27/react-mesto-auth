@@ -61,3 +61,6 @@
 @import url("./blocks/tool/__image/tool__image.css");
 @import url("./blocks/tool/__button/tool__button.css");
 @import url("./blocks/popup/_opened/popup_opened.css");
+@import url("./blocks/header/__box/header__box.css");
+@import url("./blocks/header/__email/header__email.css");
+@import url("./blocks/header/__title/header__title.css");
